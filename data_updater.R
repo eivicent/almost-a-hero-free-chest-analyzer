@@ -168,7 +168,7 @@ new_codes <- unique(c(codes[!codes  %in% basic$Code], codes[!codes  %in% items$C
 
 new_files <- files[codes %in% new_codes]
 
-if(new_files > 0) {
+if(length(new_files) > 0) {
   OUTPUT <- list()
   for(ii in seq_along(new_files)){
     OUTPUT[[ii]] <- extract_all_info(new_files[[ii]], pic_directory)
@@ -187,77 +187,3 @@ if(new_files > 0) {
   
   write.table(x = items, file = "./data/items.txt",append = F, sep = ";",dec = ".",row.names = F,col.names = T)
 }
-
-
-
-
-
-basic.plot <- basic %>% 
-  count(Value, Item) %>%
-  group_by(Item) %>%
-  mutate(prop = n/sum(n))
-
-expected_data <- data.frame("Item" = c("Scraps", "Tokens"),
-                            "Exp" = c(0.025, 0.1))
-
-
-ggplot(basic.plot, aes(x = Value , y = prop, fill = Item)) +
-  geom_bar(stat = "identity") + 
-  facet_grid(.~Item, scales = "free") +
-  scale_y_continuous(labels = scales::percent,breaks = seq(0,1,by =0.025)) +
-  scale_x_continuous(breaks = c(seq(5,15, by = 1), seq(20,60, by = 5))) +
-  geom_hline(aes(yintercept = Exp, colour = Item), data =expected_data) + 
-  labs(title = "% of rewards in chest chest",
-       x = "Amount of currency per chest",
-       y = "% of chance to get")
-  
-
-items.plot <- items %>% count(Hero) %>%
-  mutate(prop = n/sum(n))
-
-expected_data <- data.frame("Hero" = unique(items.plot$Hero),
-                            "Exp" = 1/14) 
-
-ggplot(items.plot %>% arrange(Hero), aes(x = Hero , y= prop)) +
-  geom_bar(stat = "identity", fill = "#00BFC4") +
-  geom_hline(aes(yintercept = Exp), colour = "#00BFC4", data = expected_data) + 
-  scale_y_continuous(labels = scales::percent) +
-  coord_flip()
-
-
-dates <- basic %>% 
-  mutate(date = substr(Code, 0, 8)) %>%
-  mutate(Date = as.Date(date, format = "%Y%m%d")) %>% 
-  distinct(Date, Code) %>%
-  count(Date)
-
-ggplot(dates, aes(x = Date, y = n)) +
-  geom_line(colour = "#00BFC4") +
-  # geom_bar(stat = "identity", fill = "#00BFC4") +
-  geom_text(aes(label = n))
-
-
-
-colours <- items[,c("Red", "Green", "Blue")]
-
-
-pca <- prcomp(colours)
-
-summary(pca)
-ggbiplot(pca, circle = T, obs.scale = 1, var.scale = 1)
-
-
-aux2 <- kmeans(pca$x[,1:2], centers = 5)
-aux2$cluster %>% table
-
-
-aux <- kmeans(colours,centers = 6)
-aux$cluster %>% table
-
-
-
-
-
-
-
-
