@@ -70,41 +70,20 @@ OUTPUT <- list()
 
 ### K-MEANS ON RAW DATA
 rarities <- c("Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythical")
-potential_rarities <- 4:6
-
 items_colours <- items[,c("Red", "Green", "Blue")]
 
 set.seed(1234)
-out <- c(); kk <- 1
-aux <- list()
-for(ii in potential_rarities){
-  aux[[kk]] <- kmeans(items_colours, ii)
-  out[kk] <- aux[[kk]]$betweenss/aux[[kk]]$totss
-  kk <- kk + 1
-}
-
-OUTPUT[[1]] <- aux[[which.max(out)]]
+OUTPUT[[1]] <- kmeans(items_colours, 5)
 
 ### K-MEANS ON PCA OF RAW DATA
 items_pca <- prcomp(items_colours)
-
-summary(items_pca)
 ggbiplot(items_pca)
 
 set.seed(1234)
-out <- c(); kk <- 1
-aux <- list()
-for(ii in potential_rarities){
-  aux[[kk]] <- kmeans(items_pca$x[,1:2], ii)
-  out[kk] <- aux[[kk]]$betweenss/aux[[kk]]$totss
-  kk <- kk + 1
-}
+OUTPUT[[2]] <- kmeans(items_pca$x[,1:2], 5)
 
-OUTPUT[[2]] <- aux[[which.max(out)]]
-
-## SUPERVISED LEARNING
+## KNOWN CLASSIFICATION
 # known data
-
 
 known_centers <- items %>% filter(Day == "20181023" & Chest == "184920" & Hero == "BOOMER") %>% select(-Day, -Chest,-Hero) %>%
     bind_rows(
