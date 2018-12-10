@@ -105,8 +105,38 @@ OUTPUT[[2]] <- aux[[which.max(out)]]
 ## SUPERVISED LEARNING
 # known data
 
-known_centers <- 
 
+known_centers <- items %>% filter(Day == "20181023" & Chest == "184920" & Hero == "BOOMER") %>% select(-Day, -Chest,-Hero) %>%
+    bind_rows(
+      items %>% filter(Day == "20181023" & Chest == "232704" & Hero == "HILT")%>% select(-Day, -Chest,-Hero)) %>%
+    bind_rows(
+      items %>% filter(Day == "20181024" & Chest == "214527" & Hero == "HILT")%>% select(-Day, -Chest,-Hero)) %>%
+    bind_rows(
+      items %>% filter(Day == "20181030" & Chest == "201039" & Hero == "BELLYLARF")%>% select(-Day, -Chest,-Hero)) %>%
+    bind_rows(
+      items %>% filter(Day == "20181115" & Chest == "151512" & Hero == "V")%>% select(-Day, -Chest,-Hero))
 
+OUTPUT[[3]] <- kmeans(items_colours, centers = known_centers)
+
+### OUTPUT COMPARISON
+
+names(OUTPUT) <- c("KMEANS", "PCA-KMEANS", "GIVEN-CENTERS-KMEAN")
+
+sapply(OUTPUT, function(x) x$betweenss/x$totss)
+
+items_classification <- bind_rows(lapply(OUTPUT, function(x){
+  aux <- fct_infreq(factor(x$cluster))
+  out <- factor(aux, labels = rarities[1:length(levels(aux))])
+  return(out)})) 
+
+chances_plot <- bind_rows(apply(items_classification, 2, fct_count), .id = "Method") %>%
+  group_by(Method) %>%
+  mutate(chance = n/sum(n),
+         Rarity = factor(f, levels = rarities))
+
+ggplot(chances_plot, aes(x = Rarity, y = chance, fill = Method)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "", y = "Chance to get this item", title = "Chances to get an object of a given rarity in a Free Chest")
 
 
