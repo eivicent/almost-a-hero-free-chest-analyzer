@@ -1,7 +1,10 @@
 rm(list = ls())
-library(tidyverse)
-library(ggplot2)
+library(ggbiplot)
 library(plotly)
+library(tidyverse)
+library(magrittr)
+library(ggplot2)
+
 basic <- read.table("./data/basic.txt", sep = ";", dec = ".", header = T, stringsAsFactors = F)
 items <- read.table("./data/items.txt", sep = ";", dec = ".", header = T, stringsAsFactors = F)
 
@@ -39,7 +42,7 @@ ggplot(currencies_plot, aes(x = Value , y = prop, fill = Item)) +
   facet_grid(.~Item, scales = "free") +
   scale_y_continuous(labels = scales::percent,breaks = seq(0,1,by =0.025)) +
   scale_x_continuous(breaks = c(seq(5,15, by = 1), seq(20,60, by = 5))) +
-  geom_hline(aes(yintercept = Exp, colour = Item), data =expected_data) + 
+  geom_hline(aes(yintercept = Exp, colour = Item), data = currencies_expected_data) + 
   labs(title = "% of rewards in chest chest",
        x = "Amount of currency per chest",
        y = "% of chance to get")
@@ -63,7 +66,7 @@ ggplot(items_plot %>% arrange(Hero), aes(x = Hero , y= prop)) +
 
 
 
-OUTPUTS <- list()
+OUTPUT <- list()
 
 ### K-MEANS ON RAW DATA
 rarities <- c("Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythical")
@@ -80,14 +83,13 @@ for(ii in potential_rarities){
   kk <- kk + 1
 }
 
-case1_kmeans <- aux[[which.max(out)]]
+OUTPUT[[1]] <- aux[[which.max(out)]]
 
 ### K-MEANS ON PCA OF RAW DATA
 items_pca <- prcomp(items_colours)
 
-summary(pca)
-# ggbiplot(pca, circle = T, obs.scale = 1, var.scale = 1)
-
+summary(items_pca)
+ggbiplot(items_pca)
 
 set.seed(1234)
 out <- c(); kk <- 1
@@ -98,6 +100,13 @@ for(ii in potential_rarities){
   kk <- kk + 1
 }
 
-case2_kmeans <- aux[[which.max(out)]]
+OUTPUT[[2]] <- aux[[which.max(out)]]
+
+## SUPERVISED LEARNING
+# known data
+
+known_centers <- 
+
+
 
 
