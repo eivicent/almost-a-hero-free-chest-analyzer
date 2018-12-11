@@ -1,10 +1,4 @@
-rm(list = ls())
-library(ggbiplot)
-library(plotly)
-library(tidyverse)
-library(magrittr)
-library(ggplot2)
-
+source("./data_updater.R")
 basic <- read.table("./data/basic.txt", sep = ";", dec = ".", header = T, stringsAsFactors = F)
 items <- read.table("./data/items.txt", sep = ";", dec = ".", header = T, stringsAsFactors = F)
 
@@ -63,15 +57,11 @@ ggplot(items_plot %>% arrange(Hero), aes(x = Hero , y= prop)) +
 
 
 ########## CHANCES ANALYSIS ##########
-
-
-
 OUTPUT <- list()
-
-### K-MEANS ON RAW DATA
 rarities <- c("Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythical")
 items_colours <- items[,c("Red", "Green", "Blue")]
 
+### K-MEANS ON RAW DATA
 set.seed(1234)
 OUTPUT[[1]] <- kmeans(items_colours, 5)
 
@@ -117,5 +107,10 @@ ggplot(chances_plot, aes(x = Rarity, y = chance, fill = Method)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "", y = "Chance to get this item", title = "Chances to get an object of a given rarity in a Free Chest")
+
+
+chances_plot %>% select(-n, -f) %>%
+  mutate(chance = chance*100) %>%
+  spread(Rarity, chance)
 
 

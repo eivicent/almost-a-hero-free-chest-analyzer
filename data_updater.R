@@ -1,10 +1,11 @@
-rm(list =ls())
-library(ggbiplot)
-library(tidyverse)
-library(imager)
-library(tesseract)
+if(!require(ggbiplot)){install.packages("ggbiplot")}
+if(!require(plotly)){install.packages("plotly")}
+if(!require(tidyverse)){install.packages("tidyverse")}
+if(!require(magrittr)){install.packages("magrittr")}
+if(!require(ggplot2)){install.packages("ggplot2")}
+if(!require(imager)){install.packages("imager")}
+if(!require(tesseract)){install.packages("tesseract")}
 
-# library(magick)
 
 ##########  NOTATION #################
 ## TOKENS
@@ -187,3 +188,5 @@ if(length(new_files) > 0) {
   
   write.table(x = items, file = "./data/items.txt",append = F, sep = ";",dec = ".",row.names = F,col.names = T)
 }
+
+rm(list =ls())
