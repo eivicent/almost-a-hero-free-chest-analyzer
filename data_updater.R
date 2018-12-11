@@ -80,12 +80,12 @@ get_object_one <- function(im_name, directory){
   if(width(im) == 1080 & height(im) == 2220){
     
     im2 <- imsub(im, x == 230, y == 1180)
-
+    
     im2_hero <- imsub(im, x > 310 & x < 650, y > 1095 & y < 1125)
     save.image(im2_hero, output_path)
     
     hero_one <- ocr_data(output_path)[1,1]
-    object_one <- as.data.frame(im2)
+    object_one <- data.frame(cc = c(1,2,3), value = imager::color.at(im2))
     
     info1 <- cbind(hero = hero_one,object_one %>% spread(cc,value))
     file.remove(output_path)
@@ -107,7 +107,7 @@ get_object_two <- function(im_name, directory){
     save.image(im2_hero, output_path)
     
     hero_one <- ocr_data(output_path)[1,1]
-    object_one <- as.data.frame(im2)
+    object_one <- data.frame(cc = c(1,2,3), value = imager::color.at(im2))
     
     file.remove(output_path)
     info1 <- cbind(hero = hero_one,object_one %>% spread(cc,value))
