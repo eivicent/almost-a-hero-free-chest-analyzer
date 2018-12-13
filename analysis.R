@@ -16,10 +16,12 @@ daily_chests_plot <- basic %>% group_by(Day) %>% summarise(n = n_distinct(Chest)
 
 ggplot(daily_chests_plot, aes(x = Day, y = n)) +
   geom_line(colour = "#00BFC4") +
-  geom_text(aes(label = n)) +
+  # geom_text(aes(label = n)) +
   labs(x = "Day", y = "Number of chests per day", title = "Number of chests opened per day") + 
   scale_x_date(date_breaks = "week") + 
   theme_minimal()
+
+ggsave(filename = "daily_chests.jpg", path =  "./images_report")
 
 
 currencies_plot <- basic %>% 
