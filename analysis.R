@@ -43,6 +43,8 @@ ggplot(currencies_plot, aes(x = Value , y = prop, fill = Item)) +
        x = "Amount of currency per chest",
        y = "% of chance to get")
 
+ggsave(filename = "currency_rewards.jpg", path = "./images_report")
+
 basic %>% group_by(Item) %>% summarise(max_value_obtained = max(Value))
 
 items_plot <- items %>% count(Hero) %>%
@@ -56,6 +58,8 @@ ggplot(items_plot %>% arrange(Hero), aes(x = Hero , y= prop)) +
   geom_hline(aes(yintercept = Exp), colour = "#00BFC4", data = expected_data) + 
   scale_y_continuous(labels = scales::percent) +
   coord_flip()
+
+ggsave(filename = "hero_rewards.jpg", path = "./images_report")
 
 
 ########## CHANCES ANALYSIS ##########
@@ -109,6 +113,8 @@ ggplot(chances_plot, aes(x = Rarity, y = chance, fill = Method)) +
   geom_bar(stat = "identity", position = "dodge") +
   scale_y_continuous(labels = scales::percent) +
   labs(x = "", y = "Chance to get this item", title = "Chances to get an object of a given rarity in a Free Chest")
+
+ggsave(filename = "chances_comparison.jpg", path = "./images_report")
 
 
 chances_plot %>% select(-n, -f) %>%
