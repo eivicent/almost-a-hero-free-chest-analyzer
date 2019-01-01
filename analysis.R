@@ -109,9 +109,11 @@ chances_plot <- bind_rows(apply(items_classification, 2, fct_count), .id = "Meth
   mutate(chance = n/sum(n),
          Rarity = factor(f, levels = rarities))
 
-ggplot(chances_plot, aes(x = Rarity, y = chance, fill = Method)) +
+ggplot(chances_plot %>% filter(Method == "GIVEN-CENTERS-KMEAN"), aes(x = Rarity, y = chance, fill = Method)) +
   geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = paste0(round(chance*100,2),"%")), nudge_y = 0.02) +
   scale_y_continuous(labels = scales::percent) +
+  scale_fill_discrete(guide = F) + 
   labs(x = "", y = "Chance to get this item", title = "Chances to get an object of a given rarity in a Free Chest")
 
 ggsave(filename = "chances_comparison.jpg", path = "./images_report")

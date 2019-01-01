@@ -2,17 +2,12 @@
 ## Motivation
 Almost a Hero is Free-To-Play idle-RPG mobile game. As many FTP games, users can purchase lootboxes that awards currencies and items that are needed to progress in game. It is also common that these kind of games offer a FREE lootbox every [X] amount of hours to help retaining the user and creating the habit of connecting.
 
-After having played this game (and a lot other games) for quite some time, I wanted to determine what is the value of this free lootbox and find what are the chances to get an object of a given rarity (Common, Uncommon, Rare, Epic, Legendary)
+I have played this game (and a lot other games) for quite some time and I felt curiosity to determine what is the value of this free lootbox and find what are the chances to get an object of a given rarity (Common, Uncommon, Rare, Epic, Legendary)
 
-For this, I have been gathering screenshots for ~40 days and analyzed them with `imager`and `tesseract` packages
+For this, I have been gathering screenshots for ~40 days and analyzed them with `imager`and `tesseract` packages.
 
 ## Data
-One free lootbox is available every 4 hours but it can be reduced to 1h, allowing me to open a lot of chests daily and gather the maximum data as possible.
-
-![](./images_report/daily_chests.jpg)
-
-
-In total:
+One free lootbox is available every 4 hours but it can be reduced to 1h, allowing me to open a lot of chests daily and gather the maximum data as possible. In total, I gathered:
 
 Chests|Days
 ------|------
@@ -31,13 +26,9 @@ For each lootbox, I was taking a screenshot of the rewards screen and reading th
 Text and numbers were extracted directly from the parts of the screenshot with function `tesseract::ocr_data()`
 
 Rarity of the items was exctracted by selecting 1 pixel of the border of each and reading its RGB composition with function `imager::color.at()`. 
-For some reason I have not investigated, this function gives slightly different values for objects of the same rarity.
+For some reason I have not investigated, this function gives slightly different values for objects that are the same rarity and thus the same colour.
 
-To overcome this problem, I have used a clustering method to group the most similar values in rarity groups. I have tried three approaches:
-1. Using k-means on the RGB data set
-2. Using k-means on the reduced RGB dataset using PCA method
-3. Using k-means with known centers.
-
+To overcome this problem, I have used a clustering method to group the most similar values in rarity groups, given an example for each rarity. 
 
 ## Results & Conclusions
 
@@ -51,29 +42,23 @@ As in the case of the currencies, it looks like the chances to get an object for
 
 ![](./images_report/hero_rewards.jpg)
 
-Regarding the rarities, the values obtained by the clustering are:
+
+Regarding rarity, the distribution found is as follow:
 
 ![](./images_report/chances_comparison.jpg)
 
-Clearly, giving one example of each rarity to the clustering algorithm had the "best" or, at least, the most reliable one.
-Leaving the composition of the chances as follow:
-
-Rarity|Chances
-------|------
-Common|75.6%
-Uncommon|19.9%
-Rare|3.78%
-Epic|0.511%
-Legendary|0.204%
-
-
 #### Value
 
-**Scraps** is the scarcest currency in the game and the one that drives all progression, so to calculate the "value" of the chests I will translate everything to it based on the following conversions:
+**Scraps** is the scarcest currency (despite Gems - the paid currency) in the game and the one that drives all progression, so to calculate the "value" of the lootbox I will translate everything to it based on the following conversions:
+
+If:
 
 Item|Gem Cost
+-----|------
 200 Scraps | 20 Gems
 175 Tokens | 25 Gems
+
+Then:
 
 1 Gem = 7 Tokens = 10 Scraps
 
@@ -86,14 +71,17 @@ Rare|75
 Epic|150
 Legendary|300
 
-Value per Item = (10 x 0.756) + (25 x 0.199) + (75 x 0.0378) + (150 x 0.00511) + (300 x 0.00204) = 16.75
+
+Assuming the previous chances and conversions, I have created a function to simulate a lootbox and run a simulation of 100k openings. Getting that the "average value"" of a Free lootbox is 80 scraps, ranging from 53 to 103 in most of the cases (80%)
+
+![](./images_report/chest_value.jpg)
 
 
-So, we have:
-- Scraps = 19.5 scraps
-- Tokens = 4.5 tokens = 3.15 scraps
-- Objects (x2) = 33.497 scraps
+#### Comments and assumptions
+- Data was collected from 23rd of October to 7th of December of 2018
+- During this period the game was updated and the findings could no longer apply to what is actually in-game
+- Tokens have been included to assess the "value" of the lootbox altough there is not any explicit way to convert them to Scraps in the game.
+- The 2 items in the chest have been considered independent of each other, but it could be that they are correlated. And for example, the chance to get 2 objects of high rarity in the same chest is restricted by the designers.
 
-Total Value in Scraps per chest = 56.147
 
 
