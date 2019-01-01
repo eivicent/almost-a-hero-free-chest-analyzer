@@ -16,19 +16,19 @@ Chests|Days
 Each lootbox contains:
 - Guaranteed amount of *Scraps*  [20-60]
 - Guaranteed amount of *Tokens* [5-15]
-- *Rarity* (associated to the colour of the border) and *Hero* of each item
+- 2 Items of given *Hero* and *Rarity* (based on the colour of the border) 
 
 For each lootbox, I was taking a screenshot of the rewards screen and reading the following information:
 
-<img src="./images_report/example_screenshot.jpg" width="100" align = "middle"/>
+<img src="./images_report/example_screenshot.jpg" width="200" align = "middle"/>
 
 ## Process
 Text and numbers were extracted directly from the parts of the screenshot with function `tesseract::ocr_data()`
 
-Rarity of the items was exctracted by selecting 1 pixel of the border of each and reading its RGB composition with function `imager::color.at()`. 
+Rarity of the items was exctracted by selecting 1 pixel of the border of each item and reading its RGB composition with function `imager::color.at()`. 
 For some reason I have not investigated, this function gives slightly different values for objects that are the same rarity and thus the same colour.
 
-To overcome this problem, I have used a clustering method to group the most similar values in rarity groups, given an example for each rarity. 
+To overcome this problem, I have used a clustering method (k-means) to group the most similar values in rarity groups, given an example for each rarity.
 
 ## Results & Conclusions
 
@@ -49,7 +49,7 @@ Regarding rarity, the distribution found is as follow:
 
 #### Value
 
-**Scraps** is the scarcest currency (despite Gems - the paid currency) in the game and the one that drives all progression, so to calculate the "value" of the lootbox I will translate everything to it based on the following conversions:
+**Scraps** is the scarcest currency (apart from Gems - paid currency) in the game and the one that drives all progression, so to calculate the "value" of the lootbox I will translate everything to it based on the following conversions:
 
 If:
 
@@ -63,7 +63,7 @@ Then:
 1 Gem = 7 Tokens = 10 Scraps
 
 
-Rarity|Scrap Value (based on the game conversion)
+Rarity|Scraps Value (based on the game conversion)
 ------|------
 Common|10
 Uncommon|25
@@ -72,7 +72,7 @@ Epic|150
 Legendary|300
 
 
-Assuming the previous chances and conversions, I have created a function to simulate a lootbox and run a simulation of 100k openings. Getting that the "average value"" of a Free lootbox is 80 scraps, ranging from 53 to 103 in most of the cases (80%)
+Assuming the previous chances and conversions, I have created a function to simulate a lootbox and run a simulation of 100k openings. Getting that the "average value"" of a Free lootbox is **80** scraps, ranging from 53 to 103 in most of the cases (80%)
 
 ![](./images_report/chest_value.jpg)
 

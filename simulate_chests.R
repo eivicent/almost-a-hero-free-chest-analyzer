@@ -35,5 +35,5 @@ ggplot(out, aes(x = values, y = prop)) +
   scale_x_continuous(breaks = seq(40, 250, by = 30)) +
   labs(x = "Scrap Value per chest", y ="Chances to get", title = "Distribution of value per chest", subtitle = "Based on simulation")
 
-ggsave(filename = "chest_value.jpg", path = "./images_report")
+ggsave(filename = "chest_value.jpg", path = "./images_report", height = 5, width = 6)
 

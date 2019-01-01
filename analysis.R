@@ -21,7 +21,7 @@ ggplot(daily_chests_plot, aes(x = Day, y = n)) +
   scale_x_date(date_breaks = "week") + 
   theme_minimal()
 
-ggsave(filename = "daily_chests.jpg", path =  "./images_report")
+ggsave(filename = "daily_chests.jpg", path =  "./images_report", height = 5, width = 6)
 
 
 currencies_plot <- basic %>% 
@@ -43,7 +43,7 @@ ggplot(currencies_plot, aes(x = Value , y = prop, fill = Item)) +
        x = "Amount of currency per chest",
        y = "% of chance to get")
 
-ggsave(filename = "currency_rewards.jpg", path = "./images_report")
+ggsave(filename = "currency_rewards.jpg", path = "./images_report", height = 5, width = 6)
 
 basic %>% group_by(Item) %>% summarise(max_value_obtained = max(Value))
 
@@ -59,7 +59,7 @@ ggplot(items_plot %>% arrange(Hero), aes(x = Hero , y= prop)) +
   scale_y_continuous(labels = scales::percent) +
   coord_flip()
 
-ggsave(filename = "hero_rewards.jpg", path = "./images_report")
+ggsave(filename = "hero_rewards.jpg", path = "./images_report", height = 5, width = 6)
 
 
 ########## CHANCES ANALYSIS ##########
@@ -116,7 +116,7 @@ ggplot(chances_plot %>% filter(Method == "GIVEN-CENTERS-KMEAN"), aes(x = Rarity,
   scale_fill_discrete(guide = F) + 
   labs(x = "", y = "Chance to get this item", title = "Chances to get an object of a given rarity in a Free Chest")
 
-ggsave(filename = "chances_comparison.jpg", path = "./images_report")
+ggsave(filename = "chances_comparison.jpg", path = "./images_report", height = 5, width = 6)
 
 
 chances_plot %>% select(-n, -f) %>%
